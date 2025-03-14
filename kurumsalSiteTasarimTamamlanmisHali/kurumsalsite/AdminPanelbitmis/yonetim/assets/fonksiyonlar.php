@@ -76,9 +76,11 @@ class yonetim {
             $guncelle->bindParam(18, $yorumsayfabas, PDO::PARAM_STR);
             $guncelle->bindParam(19, $iletisimsayfabas, PDO::PARAM_STR);
 
-            if ($guncelle->execute()) {
-                echo '<div class="alert alert-success" role="alert">Güncelleme Başarılı</div>';
-                header("refresh:2;url=index.php");
+            if ($guncelle->execute() ) {
+                // Güncelleme Başarılı
+                
+                echo '<div class="alert alert-success mt-5" role="alert">Güncelleme Başarılı</div>';
+                header("refresh:2;url=control.php");
                 exit;
             } else {
                 echo '<div class="alert alert-danger" role="alert">Güncelleme Başarısız</div>';
@@ -87,7 +89,7 @@ class yonetim {
         else :
 ?>
 
-            <form action="index.php?sayfa=siteayar" method="post">
+            <form action="control.php?sayfa=siteayar" method="post">
                 <div class="row">
                     <div class="col-lg-7 mx-auto mt-2 ">
                         <h3 class="text-info">SİTE AYARLARI </h3>

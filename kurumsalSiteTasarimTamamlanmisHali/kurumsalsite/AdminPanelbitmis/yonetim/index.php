@@ -1,139 +1,108 @@
 <?php
 include_once("assets/fonksiyonlar.php"); // yonetim sınıfının tanımlandığı dosyanın yolunu ekleyin
 $yonetim = new yonetim;
+$yonetim->kontrolet("ind");
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['girisyap'])) {
+    $kulad = htmlspecialchars($_POST['kuladlab']);
+    $sifre = htmlspecialchars($_POST['sifrelab']);
+
+    if ($kulad == "" || $sifre == "") {
+        $hata = "Kullanıcı adı ve şifre boş bırakılamaz!";
+    } else {
+        $yonetim->giriskontrol($kulad, $sifre, $baglanti);
+    }
+}
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8">
-   
-    <title>Udemy Nakliyat-Yönetim Paneli</title>
-    
-   
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/png" href="assets/images/icon/favicon.ico">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-   
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/themify-icons.css">
-    <link rel="stylesheet" href="assets/css/metisMenu.css">
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="assets/css/slicknav.min.css">    
-    <link rel="stylesheet" href="assets/css/typography.css">
-    <link rel="stylesheet" href="assets/css/default-css.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">   
-    <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
-    <style>
-        #siteayarfont{
-            font-size: 18px;
-            }
-    </style>
+  <title>Udemy Nakliyat-Yönetim Paneli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/png" href="assets/images/icon/favicon.ico">
+  
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/css/themify-icons.css">
+  <link rel="stylesheet" href="assets/css/metisMenu.css">
+  <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="assets/css/slicknav.min.css">    
+  <link rel="stylesheet" href="assets/css/typography.css">
+  <link rel="stylesheet" href="assets/css/default-css.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">   
+  <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+  <style>
+    #siteayarfont {
+      font-size: 18px;
+    }
+    .load-img {
+      width: 20px; /* Genişlik */
+      height: 20px; /* Yükseklik */
+    }
+  </style>
 </head>
 
 <body>
-  <div id="preloader">
-        <div class="loader"></div>
-    </div>
-
-    <!-- page container area start -->
-    <div class="page-container">
-        <!-- sidebar menu area start -->
-        <div class="sidebar-menu">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <a href="index.php"><img src="assets/images/logo/logo.png" alt="logo"></a>
-                </div>
-            </div>
-            <div class="main-menu">
-                <div class="menu-inner">
-                    <nav>
-                        <ul class="metismenu" id="menu">
-                                                      
-                            <li><a href="index.php?sayfa=siteayar"><i class="ti-pencil"></i> <span>Site Ayarları</span></a></li>
-                            <li><a href="index.php?sayfa=introayar"><i class="ti-image"></i> <span>İntro Ayarları</span></a></li>
-                            <li><a href="index.php?sayfa=aracfilo"><i class="ti-flag"></i> <span>Hakkımızda Ayarları</span></a></li>
-                            <li><a href="index.php?sayfa=hakkimiz"><i class="ti-medall"></i> <span>Hizmetlerimiz Ayarları</span></a></li>
-                            <li><a href="index.php?sayfa=hizmetler"><i class="ti-eye"></i> <span>Referanslar Ayarları</span></a></li>
-                            <li><a href="index.php?sayfa=ref"><i class="ti-car"></i> <span>Araç Filosu</span></a></li>
-                            
-                            <li><a href="index.php?sayfa=yorumlar"><i class="ti-comment-alt"></i> <span>Müşteri Yorumları</span></a></li>
-                            
-                            
-             
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        <!-- sidebar menu area end -->
-        <!-- main content area start -->
-        <div class="main-content">
-            <!-- header area start -->
-            <div class="header-area">
-                <div class="row align-items-center">
-                    <!-- nav and search button -->
-                    <div class="col-md-6 col-sm-8 clearfix">
-                        <div class="nav-btn pull-left">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                      
+<div class="login-area">
+    <?php if (!$_POST): ?>
+        <div class="container">
+            <div class="login-box ptb--100">
+                <form action="index.php" method="post">
+                    <div class="login-form-head">
+                        <h4>Yönetim Paneli</h4>
+                        <p>Hoşgeldiniz</p>
                     </div>
-                    <!-- profile info & task notification -->
-                     <div class="col-sm-6 clearfix">
-                        <div class="user-profile pull-right">
-                            <img class="avatar user-thumb" src="assets/images/author/avatar.png" alt="avatar">
-                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Kullanıcı <i class="fa fa-angle-down"></i></h4>
-                            <div class="dropdown-menu">
-                               
-                                <a class="dropdown-item" href="#">Çıkış</a>
-                            </div>
+                    <div class="login-form-body">
+                        <div class="form-gp">
+                            <label for="kuladlabel">Kullanıcı Adı</label>
+                            <input type="text" id="kulad" name="kuladlab" placeholder="Kullanıcı adınızı girin">
+                            <i class="ti-user"></i>
+                            <div class="text-danger"><?php echo isset($hata) ? $hata : ''; ?></div>
+                        </div>
+                        <div class="form-gp">
+                            <label for="sifrelab">Şifre</label>
+                            <input type="password" id="sifre" name="sifrelab" placeholder="Şifrenizi girin">
+                            <i class="ti-lock"></i>
+                            <div class="text-danger"></div>
+                        </div>
+                        <div class="submit-btn-area">
+                            <input type="submit" class="btn btn-dark" value="Giriş Yap" name="girisyap">
                         </div>
                     </div>
-                </div>
-            </div>
-            <!-- header area end -->
-            <!-- page title area start -->
-
-            <!-- page title area end -->
-            <div class="main-content-inner">
-                <!-- sales report area start -->
-                <div class="row">
-                    <div class="col-lg-12 mt-5 bg-white text-center" style="min-height:500px;">
-
-                    
-                        <?php
-                        @$sayfa=$_GET["sayfa"];
-                        switch ($sayfa) :
-                            case "siteayar":
-                                $yonetim->siteayar($baglanti);
-                                break;
-                        endswitch;
-                        ?>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
-        <!-- main content area end -->
-    </div>
-    <!-- page container area end -->
+    <?php else: ?>
+        <?php if (isset($hata)): ?>
+            <div class="container-fluid bg-white">
+                <div class="alert alert-white border border-dark mt-5 p-3 text-dark font-14 font-weight-bold" role="alert">
+                    <img src="load.gif" class="mr-3 load-img">Kullanıcı adı ve şifre boş bırakılamaz!
+                </div>
+            </div>
+            <?php header("refresh:2;url=index.php"); exit; ?>
+        <?php endif; ?>
     
-    <!-- jquery latest version -->
-    <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
-    <!-- bootstrap 4 js -->
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/metisMenu.min.js"></script>
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
-    <script src="assets/js/jquery.slicknav.min.js"></script>  
+        <?php endif; ?>
+</div>
 
-    <!-- others plugins -->
-    <script src="assets/js/plugins.js"></script>
-    <script src="assets/js/scripts.js"></script>
+<div id="preloader">
+  <div class="loader"></div>
+</div>
+
+<!-- jquery latest version -->
+<script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
+<!-- bootstrap 4 js -->
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<script src="assets/js/metisMenu.min.js"></script>
+<script src="assets/js/jquery.slimscroll.min.js"></script>
+<script src="assets/js/jquery.slicknav.min.js"></script>
+<!-- others plugins -->
+<script src="assets/js/plugins.js"></script>
+<script src="assets/js/scripts.js"></script>
 </body>
-
 </html>

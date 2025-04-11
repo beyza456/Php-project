@@ -3,7 +3,7 @@
 class kurumsal {
 
    public $normaltitle, $metatitle, $metadesc, $metakey, $metaout, $metaown, $metacopy, $logoyazi, $tvit, $face, $ints, $telno, $mailadres, $normaladres, $slogan;
-   public $referansbaslik, $filobaslik, $yorumbaslik, $iletisimbaslik;
+   public $referansbaslik, $filobaslik, $yorumbaslik, $iletisimbaslik,$hizmetlerbaslik;
    private $baglanti;
 
    function __construct() {  
@@ -37,6 +37,7 @@ class kurumsal {
       $this->filobaslik = $sorguson["filobaslik"]; 
       $this->yorumbaslik = $sorguson["yorumbaslik"];
       $this->iletisimbaslik = $sorguson["iletisimbaslik"];
+      $this->hizmetlerbaslik = $sorguson["hizmetlerbaslik"];
    }
 
    function introbak() { 
@@ -68,51 +69,34 @@ class kurumsal {
       }
    }
 
-   function hizmetler() { 
-      $introal = $this->baglanti->prepare("SELECT * FROM hizmetler");
-      if ($introal->execute()) {
-         while ($sonucum = $introal->fetch(PDO::FETCH_ASSOC)) {
-            echo '<div class="section-header">
-                  <h2>HİZMETLERİMİZ</h2>';
-            if (isset($sonucum["hizmetlerbaslik"])) {
-               echo '<p>'.$sonucum["hizmetlerbaslik"].'</p>';
-            }
-            echo '</div>
-                  <div class="row">
-                     <div class="col-lg-6">
-                        <div class="box wow fadeInLeft">
-                           <div class="icon"><i class="fa fa-bar-chart"></i></div>
-                           <h4 class="title"><a href="#">'.$sonucum["baslik1"].'</a></h4>
-                           <p class="description">'.$sonucum["icerik1"].'</p>
-                        </div> 
-                     </div>
-                     <div class="col-lg-6">
-                        <div class="box wow fadeInRight">
-                           <div class="icon"><i class="fa fa-picture-o"></i></div>
-                           <h4 class="title"><a href="#">'.$sonucum["baslik2"].'</a></h4>
-                           <p class="description">'.$sonucum["icerik2"].'</p>
-                        </div> 
-                     </div>
-                     <div class="col-lg-6">
-                        <div class="box wow fadeInLeft">
-                           <div class="icon"><i class="fa fa-map"></i></div>
-                           <h4 class="title"><a href="#">'.$sonucum["baslik3"].'</a></h4>
-                           <p class="description">'.$sonucum["icerik3"].'</p>
-                        </div> 
-                     </div>
-                     <div class="col-lg-6">
-                        <div class="box wow fadeInRight">
-                           <div class="icon"><i class="fa fa-shopping-bag"></i></div>
-                           <h4 class="title"><a href="#">'.$sonucum["baslik4"].'</a></h4>
-                           <p class="description">'.$sonucum["icerik4"].'</p>
-                        </div> 
-                     </div>
+   
+function hizmetler() { 
+    $introal = $this->baglanti->prepare("SELECT * FROM hizmetler");
+    if ($introal->execute()) {
+        echo '<div class="section-header">
+                <h2>HİZMETLERİMİZ</h2>';
+        if (isset($this->hizmetlerbaslik)) {
+            echo '<p>' . htmlspecialchars($this->hizmetlerbaslik, ENT_QUOTES, 'UTF-8') . '</p>';
+        }
+        echo '</div>
+              <div class="row">';
+
+        // Veritabanından gelen verileri döngü ile ekliyoruz
+        while ($sonucum = $introal->fetch(PDO::FETCH_ASSOC)) :
+            echo '<div class="col-lg-6">
+                    <div class="box wow fadeInTop">
+                        <div class="icon"><i class="fa fa-certificate"></i></div>
+                        <h4 class="title"><a href="#">' . htmlspecialchars($sonucum["baslik"], ENT_QUOTES, 'UTF-8') . '</a></h4>
+                        <p class="description">' . htmlspecialchars($sonucum["icerik"], ENT_QUOTES, 'UTF-8') . '</p>
+                    </div>
                   </div>';
-         }
-      } else {
-         echo "Sorgu başarısız oldu.";
-      }
-   }
+        endwhile;
+
+        echo '</div>'; // row sınıfını kapatıyoruz
+    } else {
+        echo "Sorgu başarısız oldu.";
+    }
+}
 
    function referanslar() { 
       $introal = $this->baglanti->prepare("SELECT * FROM referanslar");

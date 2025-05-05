@@ -1,6 +1,12 @@
 <?php
 include_once("assets/fonksiyonlar.php"); // yonetim sınıfının tanımlandığı dosyanın yolunu ekleyin
+include_once("assets/fonksiyonlar2.php"); // yonetim sınıfının tanımlandığı dosyanın yolunu ekleyin
+include_once("assets/fonksiyonlar3.php");
+
 $yonetim = new yonetim;
+$yonetim2 = new yonetim2;
+$yonetim3 = new yonetim3;
+
 $yonetim->kontrolet("cot");
 ?>
 
@@ -57,15 +63,29 @@ $yonetim->kontrolet("cot");
       <div class="menu-inner">
         <nav>
           <ul class="metismenu" id="menu">
-            <li><a href="control.php?sayfa=siteayar"><i class="ti-pencil"></i> <span>Site Ayarları</span></a></li>
+            
             <li><a href="control.php?sayfa=introayar"><i class="ti-image"></i> <span>İntro Ayarları</span></a></li>
             <li><a href="control.php?sayfa=aracfilo"><i class="ti-flag"></i> <span>Araç Filosu</span></a></li>
+
+            <li><a href="control.php?sayfa=videolar"><i class="ti-image"></i> <span>Video Yönetimi</span></a></li>
             <li><a href="control.php?sayfa=hakkimiz"><i class="ti-medall"></i> <span>Hakkımızda Ayarları</span></a></li>
             <li><a href="control.php?sayfa=hizmetler"><i class="ti-eye"></i> <span>Hizmetlerimiz Ayarları</span></a></li>
             <li><a href="control.php?sayfa=ref"><i class="ti-car"></i> <span>Referanslar Ayarları</span></a></li>
+            <li><a href="control.php?sayfa=tas"><i class="ti-car"></i> <span>Tasarım Ayarları</span></a></li>
             <li><a href="control.php?sayfa=yorumlar"><i class="ti-comment-alt"></i> <span>Müşteri Yorumları</span></a></li>
-            <li><a href="control.php?sayfa=yorumlar"><i class="fa fa-envelope"></i> <span>Gelen Mesajlar</span></a></li>
-            <li><a href="control.php?sayfa=yorumlar"><i class="fa fa-cog"></i> <span>Mail Ayarları</span></a></li>
+            <li><a href="control.php?sayfa=gelenmesaj"><i class="fa fa-envelope"></i> <span>Gelen Mesajlar</span></a></li>
+
+            <li><a href="control.php?sayfa=bulten"><i class="ti-flag"></i> <span>Bulten Ayarları </span></a></li>
+            <li><a href="control.php?sayfa=bakim"><i class="ti-server"></i> <span>Veritabanı Bakım</span></a></li>
+            <li><a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-cog"></i> <span>Ayarlar</span></a>
+              <ul class="collapse">
+
+              <li><a href="control.php?sayfa=siteayar"><i class="ti-pencil"></i> <span>Site Ayarları</span></a></li>
+              <li><a href="control.php?sayfa=mailayar"><i class="fa fa-cog"></i> <span>Mail Ayarları</span></a></li>
+              <li><a href="control.php?sayfa=linkayar"><i class="fa fa-cog"></i> <span>Link Ayarları</span></a></li>
+              </ul>
+
+            </li>
           </ul>
         </nav>
       </div>
@@ -88,9 +108,11 @@ $yonetim->kontrolet("cot");
         <!-- profile info & task notification -->
         <div class="col-sm-6 clearfix">
           <div class="user-profile pull-right">
-            <img class="avatar user-thumb" src="assets/images/author/avatar.png" alt="avatar">
-            <h4 class="user-name dropdown-toggle" data-toggle="dropdown"><?php echo $yonetim->kuladial($baglanti); ?> <i class="fa fa-angle-down"></i></h4>
+            
+            <h4 class="user-name dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user mr-2"></i><?php echo $yonetim->kuladial($baglanti); ?> <i class="fa fa-angle-down"></i></h4>
             <div class="dropdown-menu">
+              <a class="dropdown-item" href="control.php?sayfa=ayarlar">Ayarlar</a>
+              <a class="dropdown-item" href="control.php?sayfa=kulayar">Kullanıcı Ayarları</a>
               <a class="dropdown-item" href="control.php?sayfa=cikis">Çıkış</a>
             </div>
           </div>
@@ -151,34 +173,35 @@ $yonetim->kontrolet("cot");
                           
                           //Hakkımızda Ayarları
                           case "hakkimiz":
-                                $yonetim->hakkimizda($baglanti);
+                                $yonetim2->hakkimizda($baglanti);
                                 break;
                           
                           //Hizmetlerimiz Ayarları
+                          
                           case "hizmetler":
-                            $yonetim->hizmetlerhepsi($baglanti);
+                            $yonetim2->hizmetlerhepsi($baglanti);
                             break;
                    
                           case "hizmetguncelle":
-                              $yonetim->hizmetguncelleme($baglanti);
+                              $yonetim2->hizmetguncelleme($baglanti);
                               break;
                           case "hizmetsil":
-                                $yonetim->hizmetsil($baglanti);
+                                $yonetim2->hizmetsil($baglanti);
                                 break;
                           case "hizmetekle":
-                                  $yonetim->hizmetekleme($baglanti);
+                                  $yonetim2->hizmetekleme($baglanti);
                                   break;
 
                           //Referanslar Ayarları
                           case "ref":
-                            $yonetim->referanslarhepsi($baglanti);
+                            $yonetim2->referanslarhepsi($baglanti);
                             break;
                    
                           case "refsil":
-                                $yonetim->refsil($baglanti);
+                                $yonetim2->refsil($baglanti);
                                 break;
                           case "refekle":
-                                  $yonetim->refekleme($baglanti);
+                                  $yonetim2->refekleme($baglanti);
                                   break;
 
                           //Müşteri Yorumları Ayarları
@@ -186,23 +209,113 @@ $yonetim->kontrolet("cot");
 
 
                           case "yorumlar":
-                            $yonetim->yorumlarhepsi($baglanti);
+                            $yonetim2->yorumlarhepsi($baglanti);
                             break;
                    
                           case "yorumguncelle":
-                              $yonetim->yorumlarguncelleme($baglanti);
+                              $yonetim2->yorumlarguncelleme($baglanti);
                               break;
                           case "yorumsil":
-                                $yonetim->yorumlarsil($baglanti);
+                                $yonetim2->yorumlarsil($baglanti);
                                 break;
                           case "yorumekle":
-                                  $yonetim->yorumlarekleme($baglanti);
+                                  $yonetim2->yorumlarekleme($baglanti);
+                                  break;
+                          
+                          //Gelen Mesajlar Ayarları
+                          case "gelenmesaj":
+                            $yonetim->gelenmesajlar($baglanti);
+                            break;
+
+                            case "mesajoku":
+                              $yonetim->mesajdetay($baglanti,$_GET["id"]);
+                              break;
+
+                            case "mesajarsivle":
+                                $yonetim->mesajarsivle($baglanti,$_GET["id"]);
+                               
+                                break;
+
+                            case "mesajsil":
+                                  $yonetim->mesajsil($baglanti,$_GET["id"]);
                                   break;
 
-            
+                            //Mail Ayarları
+                            case "mailayar":
+                              $yonetim2->mailayar($baglanti);
+                              break;    
+
+                            //Kullanıcı Ayarları
+                            case "ayarlar":
+                              $yonetim2->ayarlar($baglanti);
+                              break;
+
+                            case "kulayar":
+                                $yonetim2->kullistele($baglanti);
+                                break;
+
+                            case "yonsil":
+                                  $yonetim2->yonsil($baglanti,$_GET["id"]);
+                                  break;
+
+                            case "yonekle":
+                                   $yonetim2->yonekle($baglanti);
+                                    break;
+
+                            //Tasarım Ayarları
+                            case "tas":
+                              $yonetim2->tasarimYonetim($baglanti);
+                              break;
+
+                            //Veritabanı Bakım
+                            case "bakim":
+                              $yonetim2->bakim($baglanti);
+                              break;
+
+                            //Link Ayarları
+                          
+                          case "linkayar":
+                            $yonetim3->linkayar($baglanti);
+                            break;
+                   
+                          case "linkguncelle":
+                              $yonetim3->linkguncelleme($baglanti);
+                              break;
+                          case "linksil":
+                                $yonetim3->linksil($baglanti);
+                                break;
+                          case "linkekle":
+                                  $yonetim3->linkekleme($baglanti);
+                                  break;
+
+                          //Video Ayarları
+                          case "videolar":
+                            $yonetim->videolar($baglanti);
+                            break;
+                   
+                          case "videoguncelle":
+                              $yonetim->videoguncelleme($baglanti);
+                              break;
+                          case "videosil":
+                                $yonetim->videosil($baglanti);
+                                break;
+                          case "videoekle":
+                                  $yonetim->videoekleme($baglanti);
+                                  break;
+
+                            //Bulten Ayarları
+                            case "bulten":
+                              $yonetim3->bulten($baglanti);
+                              break;
+                                
+                            //Ana Sayfa Ayarı
+                            default:
+                                  $yonetim->aracfilo($baglanti);
+                                  break;
                     endswitch;
           ?>
-        </div>
+       
+      </div>
       </div>
     </div>
   </div>

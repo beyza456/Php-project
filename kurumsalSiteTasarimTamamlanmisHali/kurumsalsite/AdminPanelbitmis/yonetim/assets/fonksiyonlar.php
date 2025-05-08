@@ -723,77 +723,79 @@ try {
 
 
 
+function introresimekleme($vt) {
+    echo '<div class="row text-center">';
 
-
-    function introresimekleme($vt){
-        echo '<div class="row text-center">';
-
-        if($_POST):
-            if($_FILES["dosya"]["name"]==""):
-                echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
-                header("refresh:2;url=control.php?sayfa=introresimekle");
-                exit;
-
-            
-
-          else:
-            if($_FILES["dosya"]["size"]>(1024*1024*5)):
-            echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
+    if ($_POST):
+        if ($_FILES["dosya"]["name"] == ""):
+            echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
             header("refresh:2;url=control.php?sayfa=introresimekle");
-            
+            exit;
+
+        else:
+            if ($_FILES["dosya"]["size"] > (1024 * 1024 * 5)):
+                echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
+                header("refresh:2;url=control.php?sayfa=introresimekle");
+
             else:
-                $izinverilen= array("image/jpeg","image/png");
-                  if(!in_array($_FILES["dosya"]["type"],$izinverilen)):
-                    
+                $izinverilen = array("image/jpeg", "image/png");
+                if (!in_array($_FILES["dosya"]["type"], $izinverilen)):
                     echo '<div class="alert alert-danger mt-1" role="alert">İzin verilen dosya formatı değil.</div>';
                     header("refresh:2;url=control.php?sayfa=introresimekle");
-                    
-                  else:
-                    $dosyaminyolu='../../img/carousel/'.$_FILES["dosya"]["name"];
-                    move_uploaded_file($_FILES["dosya"]["tmp_name"],$dosyaminyolu);
-                    echo '<div class="alert alert-success mt-1" role="alert">Dosya başarıyla yüklendi</div>';
-                    header("refresh:2;url=control.php?sayfa=introayar");
 
-                    // İlk 6 karakteri silmek için substr kullanıyoruz
-                    $veritabaniYolu = substr($dosyaminyolu, 6);
+                else:
+                    // Yeni dosya ismi oluşturma
+                    $uzanti = explode(".", $_FILES["dosya"]["name"]);
+                    $randdeger = md5(mt_rand(0, 1000000));
+                    $yeniresimismi = $randdeger . "." . end($uzanti);
 
-                    //dosya yüklendikten sonra veri tabanına bu kaydı ekliyoruz
-                    $kayitekle= self::sorgum($vt,"INSERT INTO intro(resimyol) VALUES('$veritabaniYolu')",0);
-                
+                    // Dosya yolu
+                    $dosyaminyolu = '../../img/carousel/' . $yeniresimismi;
+
+                    // Dosyayı yükleme
+                    if (move_uploaded_file($_FILES["dosya"]["tmp_name"], $dosyaminyolu)):
+                        echo '<div class="alert alert-success mt-1" role="alert">Dosya başarıyla yüklendi</div>';
+                        header("refresh:2;url=control.php?sayfa=introayar");
+
+                        // İlk 6 karakteri silmek için substr kullanıyoruz
+                        $veritabaniYolu = substr($dosyaminyolu, 6);
+
+                        // Dosya yüklendikten sonra veritabanına bu kaydı ekliyoruz
+                        $kayitekle = self::sorgum($vt, "INSERT INTO intro(resimyol) VALUES('$veritabaniYolu')", 0);
+                    else:
+                        echo '<div class="alert alert-danger mt-1" role="alert">Dosya yüklenirken bir hata oluştu.</div>';
+                        header("refresh:2;url=control.php?sayfa=introresimekle");
+                    endif;
+
                 endif;
-        
-             
-        
-             endif;
+
+            endif;
 
         endif;
 
     else:
+        ?>
+        <div class="col-lg-4 mx-auto mt-2">
+            <div class="card card-bordered">
+                <div class="card-body">
+                    <h5 class="title border-bottom">İntro resim yükleme formu</h5>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <p class="card-text"><input type="file" name="dosya" /></p>
+                        <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" />
+                    </form>
 
-            ?>
-
-             <div class="col-lg-4 mx-auto mt-2">
-                <div class="card card-bordered">
-                    <div class="card-body">
-                        <h5 class="title border-bottom">İntro resim yükleme formu</h5>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <p class="card-text"><input type="file" name="dosya" /></p>
-                            <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" /> 
-                        </form>
-
-                        <p class="card-text text-left text-danger border-top">
-                            *İzin verilen formatlar: jpg-png<br/>
-                            *İzin verilen max-boyut: 5 MB 
-                        </p>
-                    </div>
+                    <p class="card-text text-left text-danger border-top">
+                        *İzin verilen formatlar: jpg-png<br/>
+                        *İzin verilen max-boyut: 5 MB
+                    </p>
                 </div>
-             </div>
-            <?php
+            </div>
+        </div>
+        <?php
+    endif;
 
-        
-        endif;
-        echo '</div></div>';
-    }
+    echo '</div></div>';
+}
 
 
     function introsil($vt){
@@ -926,72 +928,82 @@ function aracfilo($vt) {
     echo '</div>'; // row sınıfını kapatıyoruz
 
 }
+
 function aracfiloekleme($vt) {
-        echo '<div class="row text-center">';
-    
-        if ($_POST):
-            if ($_FILES["dosya"]["name"] == ""):
-                echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
+    echo '<div class="row text-center">';
+
+    if ($_POST):
+        if ($_FILES["dosya"]["name"] == ""):
+            echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
+            header("refresh:2;url=control.php?sayfa=aracfiloekle");
+            exit;
+
+        else:
+            if ($_FILES["dosya"]["size"] > (1024 * 1024 * 5)):
+                echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
                 header("refresh:2;url=control.php?sayfa=aracfiloekle");
-                exit;
-    
+
             else:
-                if ($_FILES["dosya"]["size"] > (1024 * 1024 * 5)):
-                    echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
+                $izinverilen = array("image/jpeg", "image/png");
+                if (!in_array($_FILES["dosya"]["type"], $izinverilen)):
+                    echo '<div class="alert alert-danger mt-1" role="alert">İzin verilen dosya formatı değil.</div>';
                     header("refresh:2;url=control.php?sayfa=aracfiloekle");
-    
+
                 else:
-                    $izinverilen = array("image/jpeg", "image/png");
-                    if (!in_array($_FILES["dosya"]["type"], $izinverilen)):
-                        echo '<div class="alert alert-danger mt-1" role="alert">İzin verilen dosya formatı değil.</div>';
-                        header("refresh:2;url=control.php?sayfa=aracfiloekle");
-    
-                    else:
-                        $dosyaminyolu = '../../img/filo/' . $_FILES["dosya"]["name"];
-                        move_uploaded_file($_FILES["dosya"]["tmp_name"], $dosyaminyolu);
+                    // Yeni dosya ismi oluşturma
+                    $uzanti = explode(".", $_FILES["dosya"]["name"]);
+                    $randdeger = md5(mt_rand(0, 1000000));
+                    $yeniresimismi = $randdeger . "." . end($uzanti);
+
+                    // Dosya yolu
+                    $dosyaminyolu = '../../img/filo/' . $yeniresimismi;
+
+                    // Dosyayı yükleme
+                    if (move_uploaded_file($_FILES["dosya"]["tmp_name"], $dosyaminyolu)):
                         echo '<div class="alert alert-success mt-1" role="alert">Dosya başarıyla yüklendi</div>';
                         header("refresh:2;url=control.php?sayfa=aracfilo");
-    
+
                         // İlk 6 karakteri silmek için substr kullanıyoruz
                         $veritabaniYolu = substr($dosyaminyolu, 6);
-    
+
                         // Veritabanına kaydet
                         self::sorgum($vt, "INSERT INTO filomuz(resimyol) VALUES('$veritabaniYolu')", 0);
+                    else:
+                        echo '<div class="alert alert-danger mt-1" role="alert">Dosya yüklenirken bir hata oluştu.</div>';
+                        header("refresh:2;url=control.php?sayfa=aracfiloekle");
                     endif;
+
                 endif;
+
             endif;
-    
+
+        endif;
 
     else:
+        ?>
+        <div class="col-lg-4 mx-auto mt-2">
+            <div class="card card-bordered">
+                <div class="card-body">
+                    <h5 class="title border-bottom">Araç filo resim yükleme formu</h5>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <p class="card-text"><input type="file" name="dosya" /></p>
+                        <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" />
+                    </form>
 
-           
-           ?>
-
-             <div class="col-lg-4 mx-auto mt-2">
-                <div class="card card-bordered">
-                    <div class="card-body">
-                        <h5 class="title border-bottom">Araç filo resim yükleme formu</h5>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <p class="card-text"><input type="file" name="dosya" /></p>
-                            <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" /> 
-                        </form>
-
-                        <p class="card-text text-left text-danger border-top">
-                            *İzin verilen formatlar: jpg-png<br/>
-                            *İzin verilen max-boyut: 5 MB 
-                        </p>
-                    </div>
+                    <p class="card-text text-left text-danger border-top">
+                        *İzin verilen formatlar: jpg-png<br/>
+                        *İzin verilen max-boyut: 5 MB
+                    </p>
                 </div>
-             </div>
-            <?php
+            </div>
+        </div>
+        <?php
+    endif;
 
-        
-        endif;
-        echo '</div></div>';
+    echo '</div></div>';
 }
 
 
-    
 function aracfilosil($vt) {
     $introid = $_GET["id"];
     $verial = self::sorgum($vt, "SELECT * FROM filomuz WHERE id=$introid", 1);

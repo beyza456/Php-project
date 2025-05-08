@@ -76,6 +76,8 @@ $yonetim->kontrolet("cot");
             <li><a href="control.php?sayfa=gelenmesaj"><i class="fa fa-envelope"></i> <span>Gelen Mesajlar</span></a></li>
 
             <li><a href="control.php?sayfa=bulten"><i class="ti-flag"></i> <span>Bulten Ayarları </span></a></li>
+            <li><a href="control.php?sayfa=haberler"><i class="ti-flag"></i> <span>Duyuru Ayarları</span></a></li>
+            
             <li><a href="control.php?sayfa=bakim"><i class="ti-server"></i> <span>Veritabanı Bakım</span></a></li>
             <li><a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-cog"></i> <span>Ayarlar</span></a>
               <ul class="collapse">
@@ -184,6 +186,7 @@ $yonetim->kontrolet("cot");
                    
                           case "hizmetguncelle":
                               $yonetim2->hizmetguncelleme($baglanti);
+                             
                               break;
                           case "hizmetsil":
                                 $yonetim2->hizmetsil($baglanti);
@@ -267,6 +270,10 @@ $yonetim->kontrolet("cot");
                               $yonetim2->tasarimYonetim($baglanti);
                               break;
 
+                              case "tasarimguncelle":
+                                $yonetim2->tasarimGuncelleme($baglanti);
+                                break;
+
                             //Veritabanı Bakım
                             case "bakim":
                               $yonetim2->bakim($baglanti);
@@ -307,10 +314,27 @@ $yonetim->kontrolet("cot");
                             case "bulten":
                               $yonetim3->bulten($baglanti);
                               break;
+
+                          //Duyuru Ayarları
+                          
+                          case "haberler":
+                            $yonetim2->haberler($baglanti);
+                            break;
+                   
+                          case "haberguncelle":
+                              $yonetim2->haberguncelleme($baglanti);
+                             
+                              break;
+                          case "habersil":
+                                $yonetim2->habersil($baglanti);
+                                break;
+                          case "haberekle":
+                                  $yonetim2->haberekleme($baglanti);
+                                  break;
                                 
                             //Ana Sayfa Ayarı
                             default:
-                                  $yonetim->aracfilo($baglanti);
+                                  $yonetim3->istatistikbar($baglanti);
                                   break;
                     endswitch;
           ?>

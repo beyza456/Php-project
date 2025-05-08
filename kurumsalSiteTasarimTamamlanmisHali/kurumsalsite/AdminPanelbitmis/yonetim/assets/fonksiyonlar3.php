@@ -571,6 +571,108 @@ function bulten($vt) {
 
 }
 
+function istatistikbar ($vt) {
+		
+		
+    echo '<div class="row w-100">
+
+
+                <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> İNTRO</h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+              echo parent::sorgum($vt, "SELECT * FROM intro", 0)->rowCount();
+                echo'</kbd></h3></p>   
+                
+                </div>
+                </div>
+                
+                </div>
+
+                <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> ARAÇ FİLO </h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+
+              echo parent::sorgum($vt, "SELECT * FROM filomuz", 0)->rowCount();
+                echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+
+                   <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> VİDEO </h5>	
+                <p class="card-text"><h3><kbd class="text-warning"> ';
+                 echo parent::sorgum($vt, "SELECT * FROM videolar", 0)->rowCount();
+               
+              
+              echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+
+                   <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> REFERANSLAR </h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+              echo parent::sorgum($vt, "SELECT * FROM referanslar", 0)->rowCount();
+                
+              echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+
+                   <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> MÜŞTERİ YORUMLAR </h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+              echo parent::sorgum($vt, "SELECT * FROM yorumlar", 0)->rowCount();
+               
+              echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+
+                   <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> BÜLTEN </h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+              echo parent::sorgum($vt, "SELECT * FROM bulten", 0)->rowCount();
+               
+              echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+
+                  <div class="col-lg-3 col-md-6  mt-2">
+                <div class="card text-center border border-dark" >
+                <div class="card-body">
+                <h5 class="card-title  p-2 bg-dark text-white "> HABERLER </h5>	
+                <p class="card-text"><h3><kbd class="text-warning">';
+              echo parent::sorgum($vt, "SELECT * FROM  haberler ", 0)->rowCount();
+               
+              echo'</kbd></h3></p>   
+                </div>
+                </div>
+                
+                </div>
+    
+    </div>';
+        
+    }
+
                     
 }
 ?>

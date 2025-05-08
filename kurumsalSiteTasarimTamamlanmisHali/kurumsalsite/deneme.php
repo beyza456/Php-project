@@ -57,7 +57,22 @@ if (!$sinif->baglanti) {
     <script src="lib/magnific-popup/magnific-popup.min.js"></script>
     <script src="lib/sticky/sticky.js"></script>
     <script src="js/main.js"></script>
+ 
+    <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.vticker-min.js"></script>
+<script type="text/javascript">
+$(function(){
 
+        $('#news-container1').vTicker({
+		speed: 700,
+		pause: 4000,
+		animation: 'fade',
+		
+		mousePause: false,
+		showItems: 1
+	});
+});
+</script>
     <!-- Fontlar -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800|Montserrat:300,400,700" rel="stylesheet">
 
@@ -163,32 +178,13 @@ if (!$sinif->baglanti) {
 
     <!-- ANA MAIN -->
     <main id="main">
-        <section id="hakkimizda" class="wow fadeInUp">
-            <div class="container">
-                <?php $sinif->hakkimizda(); ?>
-            </div>
-        </section>
+        <!-- BİZDEN HABERLER BÖLÜMÜ -->
+        <?php $sinif->haberler(); ?>
+    
+    
 
-        <!-- Hizmetler -->
-        <section id="hizmetler">
-            <div class="container">
-                <?php $tas->HizmettasarimDuzen(); ?>
-            </div>
-        </section>
-
-        <!-- Referanslar -->
-        <?php $tas->ReftasarimDuzen(); ?>
-
-        <!-- Filomuz -->
-        <section id="filo" class="wow fadeInUp">
-            <?php echo $sinif->filomuz(); ?>
-        </section>
-
-        <!-- Videolar -->
-        <?php $tas->VideotasarimDuzen(); ?>
-
-        <!-- Yorumlar -->
-        <?php $tas->YorumtasarimDuzen(); ?>
+        <!-- Tasarım Düzen -->
+        <?php $tas->TasarimBolumleri(); ?>
 
         <!-- İletişim -->
         <section id="iletisim" class="wow fadeInUp">

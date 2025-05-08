@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 class kurumsal {
 
    public $normaltitle, $metatitle, $metadesc, $metakey, $metaout, $metaown, $metacopy, $logoyazi, $tvit, $face, $ints, $telno, $mailadres, $normaladres, $slogan;
-   public $referansbaslik,$referansUstbaslik, $filobaslik,$filoUstbaslik, $yorumbaslik,$yorumUstbaslik, $iletisimbaslik,$iletisimUstbaslik,$hizmetlerbaslik, $hizmetlerUstbaslik, $haritabilgi,$footer, $hiztercih,$videobaslik,$videoUstbaslik;
+   public $referansbaslik,$referansUstbaslik, $filobaslik,$filoUstbaslik, $yorumbaslik,$yorumUstbaslik, $iletisimbaslik,$iletisimUstbaslik,$hizmetlerbaslik, $hizmetlerUstbaslik, $haritabilgi,$footer, $hiztercih,$videobaslik,$videoUstbaslik,$haberlerMetin;
   
    public $baglanti,$adresBilgi,$telefonBilgi,$adbilgi,$mailBilgi,$konuBilgi,$butonBilgi;
 
@@ -58,6 +58,10 @@ class kurumsal {
           $this->hizmetlerUstbaslik = $sorguson["hizmetlerUstBaslik_tr"] ?? '';
           $this->videobaslik = $sorguson["videoaltbaslik_tr"] ?? '';
           $this->videoUstbaslik = $sorguson["videoustbaslik_tr"] ?? '';
+
+          $this->haberlerMetin = $sorguson["haberler_tr"] ?? '';
+          
+
           $this->adresBilgi = "ADRESİMİZ";
           $this->telefonBilgi = "TELEFON NUMARAMIZ";
           $this->adbilgi = "Adınız";
@@ -78,6 +82,10 @@ class kurumsal {
           $this->hizmetlerUstbaslik = $sorguson["hizmetlerUstBaslik_en"] ?? '';
           $this->videobaslik = $sorguson["videoaltbaslik_en"] ?? '';
           $this->videoUstbaslik = $sorguson["videoustbaslik_en"] ?? '';
+          $this->haberlerMetin = $sorguson["haberler_en"] ?? '';
+
+
+
           $this->adresBilgi = "ADDRESS";
           $this->telefonBilgi = "PHONE NUMBER";
           $this->adbilgi = "Your Name";
@@ -174,7 +182,9 @@ class kurumsal {
    function filomuz() { 
       $introal = $this->baglanti->prepare("SELECT * FROM filomuz");
       if ($introal->execute()) {
-         echo'<div class="container">
+         echo'
+         <section id="filo" class="wow fadeInUp">
+         <div class="container">
         <div class="section-header">
         <h2>'.$this->filoUstbaslik.'</h2>
         <p>'; echo $this->filobaslik; echo'</p>
@@ -190,9 +200,10 @@ class kurumsal {
             </div>
             </a> 
             </div>
-            </div>';
+            </div>
+            ';
          endwhile;
-         echo '</div></div>';
+         echo '</div></div></div></section>';
       }
    }
    function yorumlar($baslik=false) { 
@@ -293,6 +304,39 @@ echo '</div>';
          echo '</div></div>';
       }
    }
+
+
+
+
+
+
+
+  //Duyuru Haber kısmı
+  
+function haberler($baslik = false) {
+    $introal = $this->baglanti->prepare("SELECT * FROM haberler");
+    if ($introal->execute()) {
+        // Yeni eklenen kodlar
+        echo '<div class="container wow fadeInUp">
+                <div class="row mt-2 pt-3 border-secondary border-bottom">
+                    <div class="col-lg-3 col-md-3 text-right">
+                        <h5>' . htmlspecialchars($this->haberlerMetin, ENT_QUOTES, 'UTF-8') . '</h5>
+                    </div>
+                    <div class="col-lg-9 col-md-9 text-info text-left" id="news-container1">
+                        <ul style="list-style-type:none;">';
+
+        // Haberler veya duyurular listesi
+        while ($sonucum = $introal->fetch(PDO::FETCH_ASSOC)) {
+          echo '<li>'.$sonucum["icerik_".$_SESSION["dil"]].' | '.$sonucum["tarih"].'  </li>';
+        }
+
+        echo '          </ul>
+                    </div>
+                </div>';
+    } else {
+        echo "Haberler veritabanından alınamadı.";
+    }
+}
 }
 
 

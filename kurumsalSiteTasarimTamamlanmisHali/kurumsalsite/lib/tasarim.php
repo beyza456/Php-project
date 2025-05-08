@@ -10,6 +10,7 @@ class tasarim extends kurumsal {
             $this->baglanti = new PDO("mysql:host=localhost;dbname=kurumsal;charset=utf8", "root", "sdsd3490");
             $this->baglanti->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            
             // Tasarım tablosundan verileri alıyoruz
             $introal = $this->baglanti->prepare("SELECT * FROM tasarim LIMIT 1");
             $introal->execute();
@@ -139,6 +140,20 @@ class tasarim extends kurumsal {
         } else {
             echo '<!-- Bülten bölümü gizlendi -->';
         }
+    }
+
+
+
+
+    
+    function TasarimBolumleri() {
+        $bolumler = $this->baglanti->prepare("SELECT * FROM tasarimbolumler ORDER BY siralama ASC");
+        $bolumler->execute();
+        
+        while ($bolumlerson = $bolumler->fetch(PDO::FETCH_ASSOC)):
+            $class = $bolumlerson["classAd"];
+            $this -> $class();
+        endwhile;
     }
 
 }

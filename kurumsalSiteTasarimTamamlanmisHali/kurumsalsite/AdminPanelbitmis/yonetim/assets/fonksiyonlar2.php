@@ -38,67 +38,77 @@ function referanslarhepsi($vt) {
 }
 
 function refekleme($vt) {
-        echo '<div class="row text-center">';
-    
-        if ($_POST):
-            if ($_FILES["dosya"]["name"] == ""):
-                echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
+    echo '<div class="row text-center">';
+
+    if ($_POST):
+        if ($_FILES["dosya"]["name"] == ""):
+            echo '<div class="alert alert-danger mt-1" role="alert">Dosya seçilmedi, boş olamaz.</div>';
+            header("refresh:2;url=control.php?sayfa=ref");
+            exit;
+
+        else:
+            if ($_FILES["dosya"]["size"] > (1024 * 1024 * 5)):
+                echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
                 header("refresh:2;url=control.php?sayfa=ref");
-                exit;
-    
+
             else:
-                if ($_FILES["dosya"]["size"] > (1024 * 1024 * 5)):
-                    echo '<div class="alert alert-danger mt-1" role="alert">Dosya boyutu 5 MB dan büyük olamaz.</div>';
+                $izinverilen = array("image/jpeg", "image/png");
+                if (!in_array($_FILES["dosya"]["type"], $izinverilen)):
+                    echo '<div class="alert alert-danger mt-1" role="alert">İzin verilen dosya formatı değil.</div>';
                     header("refresh:2;url=control.php?sayfa=ref");
-    
+
                 else:
-                    $izinverilen = array("image/jpeg", "image/png");
-                    if (!in_array($_FILES["dosya"]["type"], $izinverilen)):
-                        echo '<div class="alert alert-danger mt-1" role="alert">İzin verilen dosya formatı değil.</div>';
-                        header("refresh:2;url=control.php?sayfa=ref");
-    
-                    else:
-                        $dosyaminyolu = '../../img/referans/' . $_FILES["dosya"]["name"];
-                        move_uploaded_file($_FILES["dosya"]["tmp_name"], $dosyaminyolu);
+                    // Yeni dosya ismi oluşturma
+                    $uzanti = explode(".", $_FILES["dosya"]["name"]);
+                    $randdeger = md5(mt_rand(0, 1000000));
+                    $yeniresimismi = $randdeger . "." . end($uzanti);
+
+                    // Dosya yolu
+                    $dosyaminyolu = '../../img/referans/' . $yeniresimismi;
+
+                    // Dosyayı yükleme
+                    if (move_uploaded_file($_FILES["dosya"]["tmp_name"], $dosyaminyolu)):
                         echo '<div class="alert alert-success mt-1" role="alert">Dosya başarıyla yüklendi</div>';
                         header("refresh:2;url=control.php?sayfa=ref");
-    
+
                         // İlk 6 karakteri silmek için substr kullanıyoruz
                         $veritabaniYolu = substr($dosyaminyolu, 6);
-    
+
                         // Veritabanına kaydet
                         self::sorgum($vt, "INSERT INTO referanslar(resimyol) VALUES('$veritabaniYolu')", 0);
+                    else:
+                        echo '<div class="alert alert-danger mt-1" role="alert">Dosya yüklenirken bir hata oluştu.</div>';
+                        header("refresh:2;url=control.php?sayfa=ref");
                     endif;
+
                 endif;
+
             endif;
-    
+
+        endif;
 
     else:
+        ?>
+        <div class="col-lg-4 mx-auto mt-2">
+            <div class="card card-bordered">
+                <div class="card-body">
+                    <h5 class="title border-bottom">Referans ekleme formu</h5>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <p class="card-text"><input type="file" name="dosya" /></p>
+                        <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" />
+                    </form>
 
-           
-           ?>
-
-             <div class="col-lg-4 mx-auto mt-2">
-                <div class="card card-bordered">
-                    <div class="card-body">
-                        <h5 class="title border-bottom">Referans ekleme formu</h5>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <p class="card-text"><input type="file" name="dosya" /></p>
-                            <input type="submit" name="buton" class="btn btn-primary mb-1" value="Yükle" /> 
-                        </form>
-
-                        <p class="card-text text-left text-danger border-top">
-                            *İzin verilen formatlar: jpg-png<br/>
-                            *İzin verilen max-boyut: 5 MB 
-                        </p>
-                    </div>
+                    <p class="card-text text-left text-danger border-top">
+                        *İzin verilen formatlar: jpg-png<br/>
+                        *İzin verilen max-boyut: 5 MB
+                    </p>
                 </div>
-             </div>
-            <?php
+            </div>
+        </div>
+        <?php
+    endif;
 
-        
-        endif;
-        echo '</div></div>';
+    echo '</div></div>';
 }
 
 
@@ -724,7 +734,10 @@ function hakkimizda($vt) {
 
     if ($filobilgiler && is_array($filobilgiler)) { // Sorgunun başarılı olduğunu ve bir dizi döndürdüğünü kontrol ediyoruz
         foreach ($filobilgiler as $sonbilgi) {
-            echo '<div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex align-items-stretch"> <!-- Her resim için bir sütun -->
+            echo '<section id="hakkimizda" class="wow fadeInUp">
+            <div class="container">
+            
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4 d-flex align-items-stretch"> <!-- Her resim için bir sütun -->
                 <div class="card h-100 shadow-sm">
                     <img src="../../' . htmlspecialchars($sonbilgi["resim"]) . '" class="card-img-top img-fluid" alt="Hakkımızda Resmi">
                     <div class="card-body">
@@ -759,7 +772,10 @@ function hakkimizda($vt) {
     } else {
         echo '<div class="col-lg-12">
             <div class="alert alert-warning mt-5" role="alert">Hiçbir veri bulunamadı!</div>
-        </div>';
+        </div>
+        </div>
+        </section>';
+
     }
 
     echo '</div>'; // row sınıfını kapatıyoruz
@@ -1064,9 +1080,12 @@ function tasarimGetir($gelenTercih, $radioName) {
 
 function tasarimYonetim($vt) {
     echo '<div class="row text-center">
+
+
         <div class="col-lg-12 border-bottom">
-            <h3 class="mt-3 text-info">TASARIM YÖNETİM</h3>
-        </div>
+            <h3 class="float-left mt-3 text-dark mb-2">TASARIM YÖNETİM</h3>
+        
+            </div>
     </div>';
 
     // Veritabanından tasarım bilgilerini alıyoruz
@@ -1075,6 +1094,7 @@ function tasarimYonetim($vt) {
     if (!$kayitbilgial) {
         echo '<div class="alert alert-danger mt-3 text-center">Tasarım bilgisi bulunamadı!</div>';
         return;
+   
     }
 
     echo '<div class="row justify-content-center mt-4">'; // Ortalamak için justify-content-center sınıfı ekleniyor
@@ -1100,6 +1120,7 @@ function tasarimYonetim($vt) {
                 <form action="" method="post" enctype="multipart/form-data">';
                 
                 // Hizmet Tercih
+                
                 self::tasarimGetir($kayitbilgial["reftercih"], "reftercih");
 
     echo '      </form>
@@ -1173,16 +1194,160 @@ function tasarimYonetim($vt) {
             echo '<div class="col-lg-6 mx-auto">
             <div class="alert alert-success mt-3 text-center">Tasarım Güncellemesi Başarılı!</div>
             </div>';
-            header("refresh:2;url=control.php?sayfa=tas");
+           
+            header("refresh:32;url=control.php?sayfa=tas");
         } else {
             echo '<div class="alert alert-danger mt-3 text-center">Güncelleme başarısız oldu!</div>';
         }
-    }
+
+        // Tasarım Bölümleri Alanı
+        $tasarimbilgial = self::sorgum($vt, "SELECT * FROM tasarimbolumler ORDER BY siralama ASC;",0); // 2: Tüm sonuçları döndür
+        
+        if (!$tasarimbilgial) {
+            echo '<div class="alert alert-danger mt-3 text-center">Tasarım bilgisi bulunamadı!</div>';
+            return;
+        }
+        
+        echo '<div class="row justify-content-center mt-4">'; // Ortalamak için justify-content-center sınıfı ekleniyor
+        
+        // Form başlıyor
+        echo '<div class="col-lg-6">
+            <div class="card shadow-sm">
+                <table class="table table-striped mt-1 table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Bölüm Adı</th>
+                            <th class="text-center">Sıralama</th>
+                        </tr>
+                    </thead>
+                   
+                    <tbody>';
+        
+        // Dinamik tablo satırları
+        while ($bolumson = $tasarimbilgial->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr>
+                <td class="text-center">' . htmlspecialchars($bolumson["ad"], ENT_QUOTES, 'UTF-8') . '</td>
+                <td class="text-center">' . htmlspecialchars($bolumson["siralama"], ENT_QUOTES, 'UTF-8') . '</td>
+                <td> <a href="control.php?sayfa=tasarimguncelle&id=' . $bolumson["id"] . '" class="ti-reload text-success" style="font-size:20px;"></a></td>
+            </tr>';
+        }
+        
+        echo '</tbody>
+                </table>
+            </div>
+        </div>';
+        
+        echo '</div>'; // row sınıfını kapatıyoruz
+    
+}
 }
 
-//Tasarım Yönetim Ayarları
+//Bölüm Güncelleme Yönetim Ayarları
 
+function tasarimGuncelleme($vt) {
+    // Tüm linkleri sıralama bilgisiyle alıyoruz
+    $linklerebak = parent::sorgum($vt, "SELECT * FROM tasarimbolumler ORDER BY siralama ASC", 2);
 
+    echo '<div class="row text-center">
+        <div class="col-lg-12 border-bottom">
+            <h3 class="mt-3 text-info">Bölüm Bilgisi</h3>
+        </div>
+    </div>';
+
+    // Gelen ID'yi alıyoruz
+    $kayitid = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
+    if ($kayitid <= 0) {
+        echo '<div class="alert alert-danger mt-3 text-center">Geçersiz ID!</div>';
+        return;
+    }
+
+    // Veritabanından mevcut kaydı alıyoruz
+    $kayitbilgial = parent::sorgum($vt, "SELECT * FROM tasarimbolumler WHERE id=$kayitid", 1);
+    if (!$kayitbilgial) {
+        echo '<div class="alert alert-danger mt-3 text-center">Kayıt bulunamadı!</div>';
+        return;
+    }
+
+    echo '<div class="row justify-content-center mt-4">'; // Ortalamak için justify-content-center sınıfı ekleniyor
+
+    // Link güncelleme formu
+    echo '<div class="col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white text-center">
+                <h5>Bölüm Güncelle</h5>
+            </div>
+            <div class="card-body">
+
+            
+                <div class="row">
+                    <div class="col-lg-2 pt-3">Bölüm Sırası</div>
+                    <div class="col-lg-10 p-2">
+                        <form action="" method="post">
+                            <select name="gideceksira" id="sira" class="form-control">';
+    
+    // Sıralama seçeneklerini ekliyoruz
+    if ($linklerebak && is_array($linklerebak)) {
+        foreach ($linklerebak as $sonbilgi) {
+            $selected = ($sonbilgi["siralama"] == $kayitbilgial["siralama"]) ? 'selected' : '';
+            echo '<option value="' . htmlspecialchars($sonbilgi["siralama"], ENT_QUOTES, 'UTF-8') . '" ' . $selected . '>'
+                . htmlspecialchars($sonbilgi["siralama"], ENT_QUOTES, 'UTF-8') . ' - ' 
+                . htmlspecialchars($sonbilgi["ad"], ENT_QUOTES, 'UTF-8') . 
+                '</option>';
+        }
+    } else {
+        echo '<option value="">Sıralama bilgisi bulunamadı</option>';
+    }
+
+    echo '              </select>
+                        <div class="col-lg-12 border-top p-2 text-center">
+                            <input type="hidden" name="kayitidsi" value="' . htmlspecialchars($kayitid, ENT_QUOTES, 'UTF-8') . '">
+                            <input type="hidden" name="mevcutsira" value="' . htmlspecialchars($kayitbilgial["siralama"], ENT_QUOTES, 'UTF-8') . '">
+                            <input type="submit" name="buton" class="btn btn-primary" value="Bölüm Güncelle">
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+
+    echo '</div>'; // row sınıfını kapatıyoruz
+
+    // Form gönderildiğinde veritabanına güncelleme işlemi
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $gideceksira = isset($_POST["gideceksira"]) ? intval($_POST["gideceksira"]) : 0;
+        $mevcutsira = isset($_POST["mevcutsira"]) ? intval($_POST["mevcutsira"]) : 0;
+        $kayitidsi = isset($_POST["kayitidsi"]) ? intval($_POST["kayitidsi"]) : 0;
+
+        if (!empty($gideceksira) && $gideceksira > 0 && $kayitidsi > 0) {
+            try {
+                $vt->beginTransaction();
+
+                // Eski sırayı boşalt
+                $bosalt = $vt->prepare("UPDATE tasarimbolumler SET siralama = :mevcutsira WHERE siralama = :gideceksira");
+                $bosalt->bindParam(':mevcutsira', $mevcutsira, PDO::PARAM_INT);
+                $bosalt->bindParam(':gideceksira', $gideceksira, PDO::PARAM_INT);
+                $bosalt->execute();
+
+                // Yeni sırayı güncelle
+                $guncelle = $vt->prepare("UPDATE tasarimbolumler SET siralama = :gideceksira WHERE id = :kayitidsi");
+                $guncelle->bindParam(':gideceksira', $gideceksira, PDO::PARAM_INT);
+                $guncelle->bindParam(':kayitidsi', $kayitidsi, PDO::PARAM_INT);
+                $guncelle->execute();
+
+                $vt->commit();
+
+                echo '<div class="alert alert-success mt-3 text-center">Tasarım Güncelleme başarılı!</div>';
+                header("refresh:2;url=control.php?sayfa=tas");
+            } catch (Exception $e) {
+                $vt->rollBack();
+                echo '<div class="alert alert-danger mt-3 text-center">Güncelleme yapılırken bir hata oluştu: ' . $e->getMessage() . '</div>';
+            }
+        } else {
+            echo '<div class="alert alert-warning mt-3 text-center">Lütfen tüm alanları doldurun!</div>';
+        }
+    }
+}
 
 
 function bakim($db) {
@@ -1250,7 +1415,268 @@ function bakim($db) {
     echo '</div>'; // row sınıfını kapatıyoruz
 }
 
+//Duyuru ve haber bölümü ayarları
 
+
+
+
+
+function haberler($vt) {
+			
+    echo '<div class="row text-center">
+    <div class="col-lg-12 border-bottom"><h4 class="float-left mt-3 text-dark mb-2">
+    <a href="control.php?sayfa=haberekle" class="ti-plus bg-dark p-1 text-white mr-2 mt-3" ></a>
+    HABER VE DUYURULAR</h4>
+    </div>';
+    
+$introbilgiler=self::sorgum($vt,"select * from haberler",0);
+    
+    while ($sonbilgi=$introbilgiler->fetch(PDO::FETCH_ASSOC)) :
+    
+    echo '<div class="col-lg-6">
+    
+            <div class="row card-bordered p-1 m-1 bg-light">
+            
+                <div class="col-lg-10 pt-1 pb-1 text-left text-danger">
+                    <b class="text-dark"> TARİH : </b>  '.$sonbilgi["tarih"].'					
+                </div>
+                
+                <div class="col-lg-2 text-right">
+                <a href="control.php?sayfa=haberguncelle&id='.$sonbilgi["id"].'" class="ti-reload text-success" style="font-size:20px;"></a>
+                
+                    <a href="control.php?sayfa=habersil&id='.$sonbilgi["id"].'" class="ti-trash text-danger pl-2" style="font-size:20px;"></a>
+                </div>
+                
+                <div class="col-lg-12 border-top text-secondary text-left bg-white"><b class="text-dark">TR :</b> 
+                '.$sonbilgi["icerik_tr"].'
+                </div>
+                
+                <div class="col-lg-12 border-top text-secondary text-left bg-white"><b class="text-dark">EN :</b> 
+                '.$sonbilgi["icerik_en"].'
+                </div>
+                
+            
+                
+        </div>		
+                
+    </div>';
+    
+    endwhile;
+    
+    echo '</div>';
+    
+} // haber geliyor
+
+function haberekleme($vt) {
+    
+    echo '<div class="row text-center">
+    <div class="col-lg-12 border-bottom"><h3 class="mt-3 text-dark">HABER EKLE</h3>
+    </div>';
+    
+
+if (!$_POST):
+
+
+    
+    echo '<div class="col-lg-6 mx-auto">
+    
+            <div class="row card-bordered p-1 m-1 bg-light">
+            
+                
+                
+            
+                
+                <div class="col-lg-12 border-top p-2">
+                <form action="" method="post">
+                TR - İçerik
+                </div>
+                <div class="col-lg-12 border-top p-2">
+                <textarea name="icerik_tr" rows="5" class="form-control"></textarea>
+                </div>
+                
+                <div class="col-lg-12 border-top p-2">
+                EN - İçerik
+                </div>
+                <div class="col-lg-12 border-top p-2">
+                <textarea name="icerik_en" rows="5" class="form-control"></textarea>
+                </div>
+                
+                <div class="col-lg-12 border-top p-2">
+                <input type="submit" name="buton" value="HABER EKLE" class="btn btn-primary">
+                </form>
+                </div>
+                
+            
+                
+        </div>		
+                
+    </div>';
+    
+    
+    
+    else:
+    
+    
+    $icerik_tr=htmlspecialchars($_POST["icerik_tr"]);			
+    $icerik_en=htmlspecialchars($_POST["icerik_en"]);
+
+    
+    if ($icerik_tr=="" && $icerik_en=="") :
+                
+                
+                    echo '<div class="col-lg-6 mx-auto">
+        <div class="alert alert-danger mt-5">VERİLER BOŞ OLAMAZ<div>
+        
+        <div>';		
+    
+    header("refresh:2,url=control.php?sayfa=haberler");	
+    
+                    else:
+                    
+                
+                    
+                    
+self::sorgum($vt,"insert into haberler (icerik_tr,icerik_en) VALUES('$icerik_tr','$icerik_en')",0);	
+
+echo '<div class="col-lg-6 mx-auto">
+        <div class="alert alert-success mt-5">EKLEME BAŞARILI<div>
+        
+        <div>';		
+    
+    header("refresh:2,url=control.php?sayfa=haberler");	
+            
+            
+            endif;
+            
+    
+    
+    endif;
+    
+    
+    
+    echo '</div>';
+    
+} // haber ekle
+    
+function haberguncelleme($vt) {
+    
+    echo '<div class="row text-center">
+    <div class="col-lg-12 border-bottom"><h3 class="mt-3 text-dark">HABER GÜNCELLE</h3>
+    </div>';
+    
+
+
+$kayitid=$_GET["id"];
+
+$kayitbilgial=self::sorgum($vt,"select * from haberler where id=$kayitid",1);	
+    
+
+if (!$_POST):
+
+
+    
+    echo '<div class="col-lg-6 mx-auto">
+    
+            <div class="row card-bordered p-1 m-1 bg-light">
+            
+            
+                
+                
+            
+                
+                <div class="col-lg-12 border-top p-2">
+                <form action="" method="post">
+                TR - İçerik
+                </div>
+                <div class="col-lg-12 border-top p-2">
+                <textarea name="icerik_tr" rows="5" class="form-control">'.$kayitbilgial["icerik_tr"].'</textarea>
+                </div>
+                
+                    <div class="col-lg-12 border-top p-2">
+                EN - İçerik
+                </div>
+                <div class="col-lg-12 border-top p-2">
+                <textarea name="icerik_en" rows="5" class="form-control">'.$kayitbilgial["icerik_en"].'</textarea>
+                </div>
+                
+                
+                
+                
+                
+                <div class="col-lg-12 border-top p-2">
+                <input type="hidden" name="kayitidsi" value="'.$kayitid.'">
+                <input type="submit" name="buton" value="HABER GÜNCELLE" class="btn btn-primary">
+                </form>
+                </div>
+                
+            
+                
+        </div>		
+                
+    </div>';
+    
+    
+    
+    else:
+    
+
+    $icerik_tr=htmlspecialchars($_POST["icerik_tr"]);			
+    $icerik_en=htmlspecialchars($_POST["icerik_en"]);
+
+    
+    $kayitidsi=htmlspecialchars($_POST["kayitidsi"]);
+    
+            if ($icerik_tr=="" && $icerik_en=="") :
+                
+                
+                    echo '<div class="col-lg-6 mx-auto">
+        <div class="alert alert-danger mt-5">VERİLER BOŞ OLAMAZ<div>
+        
+        <div>';		
+    
+    header("refresh:2,url=control.php?sayfa=haberler");	
+    
+                    else:
+                    
+                    
+self::sorgum($vt,"update haberler set icerik_tr='$icerik_tr',icerik_en='$icerik_en',tarih=CURRENT_TIMESTAMP() where id=$kayitidsi",0);	
+
+echo '<div class="col-lg-6 mx-auto">
+        <div class="alert alert-success mt-5">GÜNCELLEME BAŞARILI<div>
+        
+        <div>';		
+    
+    header("refresh:2,url=control.php?sayfa=haberler");	
+            
+            
+            endif;
+            
+    
+    
+    endif;
+    
+    
+    
+    echo '</div>';
+    
+} // haber güncelle
+
+function habersil ($vt) {
+
+
+$kayitid=$_GET["id"];
+
+    echo '<div class="row text-center">
+    <div class="col-lg-12">';
+    
+    self::sorgum($vt,"delete from haberler where id=$kayitid",0);		
+
+echo '<div class="alert alert-success mt-5">SİLME BAŞARILI<div>';	
+    echo '</div></div>';
+    
+    header("refresh:2,url=control.php?sayfa=haberler");
+
+} // haber sil
                     
 }
 ?>
